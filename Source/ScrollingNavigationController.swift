@@ -35,7 +35,7 @@ open class ScrollingNavigationController: UINavigationController, UIGestureRecog
   /**
    Returns the `NavigationBarState` of the navigation bar
    */
-  open fileprivate(set) var state: NavigationBarState = .expanded {
+  open var state: NavigationBarState = .expanded {
     willSet {
       if state != newValue {
         scrollingNavbarDelegate?.scrollingNavigationController?(self, willChangeState: newValue)
@@ -79,12 +79,23 @@ open class ScrollingNavigationController: UINavigationController, UIGestureRecog
 
   open fileprivate(set) var gestureRecognizer: UIPanGestureRecognizer?
   fileprivate var sourceTabBar: UITabBar?
+  fileprivate var lastFrame: CGRect = .zero
   var delayDistance: CGFloat = 0
   var maxDelay: CGFloat = 0
   var scrollableView: UIView?
   var lastContentOffset = CGFloat(0.0)
   var scrollSpeedFactor: CGFloat = 1
   var previousState: NavigationBarState = .expanded // Used to mark the state before the app goes in background
+
+  open override func viewDidLayoutSubviews() {
+    super.viewDidLayoutSubviews()
+
+    if state == .collapsed && previousState == .expanded {
+      navigationBar.frame = lastFrame
+    }
+
+    print(navigationBar.frame)
+  }
 
   /**
    Start scrolling
@@ -337,6 +348,8 @@ open class ScrollingNavigationController: UINavigationController, UIGestureRecog
       }
     }
 
+    lastFrame = frame
+
     updateSizing(scrollDelta)
     updateNavbarAlpha()
     restoreContentOffset(scrollDelta)
@@ -418,7 +431,7 @@ open class ScrollingNavigationController: UINavigationController, UIGestureRecog
     }, completion: nil)
   }
 
-  private func updateNavbarAlpha() {
+  open func updateNavbarAlpha() {
     guard let navigationItem = visibleViewController?.navigationItem else { return }
 
     let frame = navigationBar.frame

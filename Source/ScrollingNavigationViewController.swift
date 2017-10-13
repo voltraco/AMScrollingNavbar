@@ -14,7 +14,7 @@ open class ScrollingNavigationViewController: UIViewController, UIScrollViewDele
     super.viewWillAppear(animated)
 
     if let navigationController = self.navigationController as? ScrollingNavigationController {
-      navigationController.showNavbar(animated: true)
+//      navigationController.showNavbar(animated: true)
     }
   }
 
@@ -25,7 +25,7 @@ open class ScrollingNavigationViewController: UIViewController, UIScrollViewDele
     super.viewWillDisappear(animated)
 
     if let navigationController = self.navigationController as? ScrollingNavigationController {
-      navigationController.stopFollowingScrollView()
+//      navigationController.stopFollowingScrollView()
     }
   }
 
